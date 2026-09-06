@@ -90,6 +90,46 @@ func (r *GenreRepository) GetByID(id int64) (*models.Genre, error) {
 	return &g, nil
 }
 
+func (r *GenreRepository) GetByName(name string) ([]models.Genre, error) {
+	
+	query := `SELECT id, name FROM genres WHERE name LIKE ?`
+	
+	searchPattern := "%" + name + "%"
+
+	rows, err := r.db.Query(query, searchPattern)
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed to search genres by name: %w", err)
+	}
+	
+	defer rows.Close()
+
+	var genres []models.Genre
+
+	for rows.Next() {
+	
+		var g models.Genre
+		err := rows.Scan(&g.ID, &g.Name)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan genre: %w", err)
+		}
+		genres = append(genres, g)
+	
+	}
+
+	err = rows.Err()
+
+	if err != nil {
+		return nil, fmt.Errorf("row iteration error: %w", err)
+	}
+
+	if genres == nil {
+		return []models.Genre{}, nil
+	}
+
+	return genres, nil
+}
+
 
 func (r *GenreRepository) Update(genre *models.Genre) error {
 	query := `UPDATE genres SET name = ? WHERE id = ?`
