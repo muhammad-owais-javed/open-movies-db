@@ -35,15 +35,31 @@ func (h *ActorHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ActorHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	actors, err := h.service.GetAll()
+	
+	name := r.URL.Query().Get("name")
+	
+	var actors []models.Actor
+	var err error
+
+	if name != "" {
+
+		actors, err = h.service.GetByName(name)
+	
+	} else {
+		
+		actors, err = h.service.GetAll()
+	
+	}
+
 	if err != nil {
-		http.Error(w, "Failed to fetch actors", http.StatusInternalServerError)
+		http.Error(w, "Failed to fetch actors", http.StatusInternalServerError )
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(actors)
+
 }
 
 func (h *ActorHandler) GetByID(w http.ResponseWriter, r *http.Request) {
