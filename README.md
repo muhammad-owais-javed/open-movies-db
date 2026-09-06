@@ -37,8 +37,8 @@ Ensure Go 1.22+ and a C compiler (required for `go-sqlite3` CGO bindings) are in
 
 1. Clone the repository:
    ```bash
-   git clone https://gitea.kood.tech/muhammadowaisjaved/movies-api.git
-   cd movies-api
+   git clone https://github.com/muhammad-owais-javed/open-movies-db.git
+   cd open-movies-db
    ```
 2. Download dependencies:
 
