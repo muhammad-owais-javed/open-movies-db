@@ -117,3 +117,10 @@ func (s *MovieService) SearchByTitle(title string) ([]models.Movie, error) {
 
 	return s.repo.SearchByTitle(title)
 }
+
+func (s *MovieService) GetByActorID(actorID int64) ([]models.Movie, error) {
+	if actorID <= 0 {
+		return nil, errors.New("invalid actor ID provided")
+	}
+	return s.repo.GetByActorID(actorID)
+}
