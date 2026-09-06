@@ -113,8 +113,17 @@ func (h *GenreHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	updatedGenre, err := h.service.GetByID(id)
+	if err != nil {
+		http.Error(w, "Failed to fetch updated genre", http.StatusInternalServerError )
+		return
+	}
+	
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Genre updated successfully"))
+	json.NewEncoder(w).Encode(updatedGenre)
+	w.Write([]byte("\nGenre updated successfully\n"))
+	
 }
 
 func (h *GenreHandler) Delete(w http.ResponseWriter, r *http.Request) {
