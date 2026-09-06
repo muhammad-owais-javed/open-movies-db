@@ -74,7 +74,7 @@ func (s *GenreService) Delete(id int64, force bool) error {
 	}
 
 	if force == true {
-		fmt.Println("Force delete requested!")
+		return s.repo.ForceDelete(id)
 	}
 
 	return s.repo.Delete(id)
