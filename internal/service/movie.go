@@ -131,3 +131,10 @@ func (s *MovieService) GetByGenreID(genreID int64) ([]models.Movie, error) {
 	}
 	return s.repo.GetByGenreID(genreID)
 }
+
+func (s *MovieService) GetByReleaseYear(year int) ([]models.Movie, error) {
+	if year < 1888 {
+		return nil, errors.New("release year must be 1888 or later")
+	}
+	return s.repo.GetByReleaseYear(year)
+}
