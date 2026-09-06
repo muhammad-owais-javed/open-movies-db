@@ -124,3 +124,10 @@ func (s *MovieService) GetByActorID(actorID int64) ([]models.Movie, error) {
 	}
 	return s.repo.GetByActorID(actorID)
 }
+
+func (s *MovieService) GetByGenreID(genreID int64) ([]models.Movie, error) {
+	if genreID <= 0 {
+		return nil, errors.New("invalid genre ID provided")
+	}
+	return s.repo.GetByGenreID(genreID)
+}
