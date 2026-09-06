@@ -87,6 +87,46 @@ func (r *ActorRepository) GetByID(id int64) (*models.Actor, error) {
 
 }
 
+
+func (r *ActorRepository) GetByName(name string) ([]models.Actor, error) {
+	
+	query := `SELECT id, name, birth_date FROM actors WHERE name LIKE ?`
+	
+	searchPattern := "%" + name + "%"
+
+	rows, err := r.db.Query(query, searchPattern)
+	if err != nil {
+		return nil, fmt.Errorf("failed to search actors by name: %w", err)
+	}
+
+	defer rows.Close()
+
+	var actors []models.Actor
+
+	for rows.Next() {
+
+		var a models.Actor
+		err := rows.Scan(&a.ID, &a.Name, &a.BirthDate)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan actor: %w", err)
+		}
+		actors = append(actors, a)
+
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, fmt.Errorf("row iteration error: %w", err)
+	}
+
+	if actors == nil {
+		return []models.Actor{}, nil
+	}
+
+	return actors, nil
+}
+
+
 func (r *ActorRepository) Update(actor *models.Actor) error{
 
 	query := `UPDATE actors SET name = ?, birth_date = ? WHERE id = ?`
