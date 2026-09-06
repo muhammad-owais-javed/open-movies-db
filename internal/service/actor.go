@@ -54,6 +54,14 @@ func (s *ActorService) GetByID(id int64) (*models.Actor, error) {
 
 }
 
+func (s *ActorService) GetByName(name string) ([]models.Actor, error) {
+	if strings.TrimSpace(name) == "" {
+		return nil, errors.New("search name cannot be empty")
+	}
+	return s.repo.GetByName(name)
+}
+
+
 func (s *ActorService) Update(id int64, updateData *models.Actor) error {
 
 	if id <= 0 {
