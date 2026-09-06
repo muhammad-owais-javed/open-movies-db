@@ -90,7 +90,7 @@ func (h *MovieHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *MovieHandler) Update(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+		id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid ID format", http.StatusBadRequest)
 		return
@@ -107,8 +107,17 @@ func (h *MovieHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	updatedMovie, err := h.service.GetByID(id)
+	if err != nil {
+		http.Error(w, "Failed to fetch updated movie", http.StatusInternalServerError )
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Movie updated successfully"))
+	json.NewEncoder(w).Encode(updatedMovie)
+	w.Write([]byte("\nMovie updated successfull\n"))
+
 }
 
 func (h *MovieHandler) Delete(w http.ResponseWriter, r *http.Request) {
