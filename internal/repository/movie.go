@@ -358,3 +358,49 @@ func (r *MovieRepository) SearchByTitle(title string) ([]models.Movie, error) {
 
 	return movies, nil
 }
+
+
+func (r *MovieRepository) GetByActorID(actorID int64) ([]models.Movie, error) {
+	
+	query := `
+		SELECT m.id, m.title, m.release_year, m.duration 
+		FROM movies m
+		INNER JOIN movie_actors ma ON m.id = ma.movie_id
+		WHERE ma.actor_id = ?
+	`
+
+	rows, err := r.db.Query(query, actorID)
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed to query movies by actor ID: %w", err)
+	}
+	defer rows.Close()
+
+	var movies []models.Movie
+
+	for rows.Next() {
+	
+		var m models.Movie
+	
+		err := rows.Scan(&m.ID, &m.Title, &m.ReleaseYear, &m.Duration)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan movie: %w", err)
+		}
+	
+		m.Genres = []models.Genre{}
+		m.Actors = []models.Actor{}
+	
+		movies = append(movies, m)
+	
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("row iteration error: %w", err)
+	}
+
+	if movies == nil {
+		return []models.Movie{}, nil
+	}
+
+	return movies, nil
+}
