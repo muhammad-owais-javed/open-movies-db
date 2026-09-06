@@ -14,7 +14,7 @@ import (
 
 func main() {
 
-	fmt.Println("movies-api")
+	fmt.Println("open-movies-db")
 
 	err := os.MkdirAll("./data", 0755)
 	if err != nil {
