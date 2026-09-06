@@ -134,9 +134,14 @@ func (r *GenreRepository) GetByName(name string) ([]models.Genre, error) {
 func (r *GenreRepository) Update(genre *models.Genre) error {
 	query := `UPDATE genres SET name = ? WHERE id = ?`
 	
-	_, err := r.db.Exec(query, genre.Name, genre.ID)
+result, err := r.db.Exec(query, genre.Name, genre.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update genre: %w", err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("genre with ID %d not found", genre.ID)
 	}
 
 	return nil
