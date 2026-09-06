@@ -44,6 +44,14 @@ func (s *GenreService) GetByID(id int64) (*models.Genre, error) {
 	return s.repo.GetByID(id)
 }
 
+func (s *GenreService) GetByName(name string) ([]models.Genre, error) {
+	if strings.TrimSpace(name) == "" {
+		return nil, errors.New("search name cannot be empty")
+	}
+	return s.repo.GetByName(name)
+}
+
+
 func (s *GenreService) Update(genre *models.Genre) error {
 	
 	genre.Name = strings.TrimSpace(genre.Name)
