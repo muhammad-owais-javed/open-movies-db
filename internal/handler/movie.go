@@ -151,3 +151,25 @@ func (h *MovieHandler) Search(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(movies)
 }
+
+
+func (h *MovieHandler) GetActors(w http.ResponseWriter, r *http.Request ) {
+
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+
+	if err != nil {
+		http.Error(w, "Invalid ID format", http.StatusBadRequest )
+		return
+	}
+
+	movie, err := h.service.GetByID(id)
+	if err != nil {
+		http.Error(w, err.Error( ), http.StatusNotFound )
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK )
+	json.NewEncoder(w).Encode(movie.Actors)
+
+}
