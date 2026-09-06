@@ -46,9 +46,19 @@ func (h *GenreHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *GenreHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
-	genres, err := h.service.GetAll()
+	name := r.URL.Query().Get("name")
+	
+	var genres []models.Genre
+	var err error
+
+	if name != "" {
+		genres, err = h.service.GetByName(name)
+	} else {
+		genres, err = h.service.GetAll()
+	}
+
 	if err != nil {
-		http.Error(w, "Failed to fetch genres", http.StatusInternalServerError)
+		http.Error(w, "Failed to fetch genres", http.StatusInternalServerError )
 		return
 	}
 
@@ -62,6 +72,7 @@ func (h *GenreHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 		return
 	}
+
 }
 
 func (h *GenreHandler) GetByID(w http.ResponseWriter, r *http.Request) {
@@ -123,7 +134,7 @@ func (h *GenreHandler) Update(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(updatedGenre)
 	w.Write([]byte("\nGenre updated successfully\n"))
-	
+
 }
 
 func (h *GenreHandler) Delete(w http.ResponseWriter, r *http.Request) {
